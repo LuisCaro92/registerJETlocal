@@ -1,25 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import injectContext from './store/context';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Nav from './views/Nav';
+import Home from './views/Home';
+import Register from './views/Register'
+import Login from './views/Login'
+import LoginAut from './views/LoginAut'
+import { useContext } from "react";
+import { Context } from "./store/context"
+
+
+
 
 function App() {
+  const { store, actions } = useContext(Context);
+  const autToken = !!store.token
+  console.log(autToken)
+  const user = autToken;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BrowserRouter>
+        <Nav user={user} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path ="/register" element={<Register />} />
+          <Route path ="/login" element = {<Login />} />
+          <Route path="/loginaut" element={user ? (<LoginAut/>) : (<Navigate to = "/"/>)} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
 
-export default App;
+export default injectContext(App);
